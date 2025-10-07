@@ -7,6 +7,60 @@ type ChallengeId = ChallengeId of Guid
 type WorkoutId = WorkoutId of Guid
 type MealId = MealId of Guid
 
+// I add this so that the compiler can catch mistakes at compile time, and I don't mix values
+[<Measure>] type kg
+[<Measure>] type cm
+[<Measure>] type ml
+[<Measure>] type km
+
+type NonEmptyString = private NonEmptyString of string
+module NonEmptyString =
+    let create (str: string) =
+        if String.IsNullOrWhiteSpace(str) then None
+        else Some (NonEmptyString (str.Trim()))
+    
+    let value (NonEmptyString str) = str
+
+type EmailAddress = private EmailAddress of string
+module EmailAddress =
+    let create (email: string) =
+        if String.IsNullOrWhiteSpace(email) then None
+        elif email.Contains("@") && email.Length <= 254 then Some (EmailAddress email)
+        else None
+    
+    let value (EmailAddress email) = email
+
+type Weight = private Weight of float<kg>
+module Weight =
+    let create (kg: float) =
+        if kg > 0.0 && kg <= 300.0 then Some (Weight (kg * 1.0<kg>))
+        else None
+    
+    let value (Weight w) = w
+
+type Height = private Height of float<cm>
+module Height =
+    let create (cm: float) =
+        if cm > 0.0 && cm <= 250.0 then Some (Height (cm * 1.0<cm>))
+        else None
+    
+    let value (Height h) = h
+
+type PositiveInt = private PositiveInt of int
+module PositiveInt =
+    let create (n: int) = if n > 0 then Some (PositiveInt n) else None
+    let value (PositiveInt n) = n
+
+type BoundedString = private BoundedString of string
+module BoundedString =
+    let create maxLength (str: string) =
+        if String.IsNullOrWhiteSpace(str) then None
+        elif str.Length <= maxLength then Some (BoundedString str)
+        else None
+    
+    let value (BoundedString str) = str
+
+
 // User Management Context
 type FitnessLevel = Beginner | Intermediate | Advanced | Expert
 type NotificationPreference = Email | Push | Both 

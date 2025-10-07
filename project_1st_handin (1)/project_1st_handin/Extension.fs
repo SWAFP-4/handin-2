@@ -31,22 +31,6 @@ let VaildUserProfileCreation name email age weight height fitnessLevel =
         }
         Sucess profile
 
-// 3. Set fitness goals
-// updating the status
-let updateGoalProgress (goal: FitnessGoal) (progress: float) : FitnessGoal =
-    let newValue = goal.CurrentValue + progress
-    let newStatus =
-        if newValue >= goal.TargetValue then Completed
-        else goal.Status
-    { goal with CurrentValue = newValue; Status = newStatus }
-
-//checks the deadline and updates status if overdue
-//let checkGoalDeadline (goal: FitnessGoal) : FitnessGoal =
-    //match goal.Deadline with
-    //| Some dl when DateTime.Now > dl && goal.CurrentValue < goal.TargetValue -> 
-      //  { goal with Status = Failed }
-    //| _ -> goal
-
 
 // 5. View progress through charts
 // user can see motivational message while viewing the their progress
@@ -76,36 +60,6 @@ let suggestWorkouts (user: UserProfile) (workoutHistory: WorkoutEntry list) =
     | Some Advanced -> [Running(Some 10.0); Cycling(Some 20.0); HIIT]
     | Some Superior -> [Running(Some 30.0); Cycling(Some 80.0); HIIT]
     | _ -> [Walking(Some 3000); Yoga; Lifting]
-
-
-// 7. Join fitness challenges
-// making the challeneges optional
-let joinChallengeOptional (challenge: FitnessChallenge) (userId: UserId option) =
-    match userId with
-    | some id -> { challenge with Participants = userId :: challenge.Participants }
-    | none -> challenge
-
-
-// 12. Workout performance feedback
-// adding a numerical score out of 10
-let provideFeedback (workout: WorkoutEntry) =
-    match workout.Intensity with
-    | High -> ("Great intensity! Keep pushing!", 10)
-    | Medium -> ("Good workout. Consider increasing intensity gradually.", 7)
-    | Low -> ("Nice active recovery day. Remember to challenge yourself next time.", 4)
-
-
-// 16. Group workouts
-//schedule group workout
-type ScheduledGroupWorkout = {
-    Participants: UserId list
-    WorkoutType: WorkoutType
-    Date: DateTime
-}
-
-let scheduleGroupWorkout (participants: UserId list) (workoutType: WorkoutType) (date: DateTime) =
-    { Participants = participants; WorkoutType = workoutType; Date = date }
-
 
 
 

@@ -21,29 +21,10 @@ let ``CreateUserProfile should return success for valid input`` () =
     | Success profile ->
         Assert.Equal("Alice", profile.Name)
         Assert.Equal("alice@example.com", profile.Email)
+        Assert.Equal(25, profile.Age)
+        Assert.Equal(70.0, profile.Weight)
+        Assert.Equal(180.0, profile.Height)
     | _ -> Assert.True(false, "Expected success for valid input")
-
-//3.
-[<Fact>]
-let ``setFitnessGoalWithDeadline should mark goal as expired if past deadline`` () =
-    let expiredGoal =
-        setFitnessGoalWithDeadline
-            (UserId "u1")
-            Distance
-            10.0
-            (DateTime.Now.AddDays(-3.0))
-    Assert.Equal(Expired, expiredGoal.Status)
-
-[<Fact>]
-let ``setFitnessGoalWithDeadline should create active goal if future deadline`` () =
-    let goal =
-        setFitnessGoalWithDeadline
-            (UserId "u1")
-            Distance
-            10.0
-            (DateTime.Now.AddDays(7.0))
-    Assert.Equal(Active, goal.Status)
-
 
 
 //5.
@@ -80,48 +61,67 @@ let ``suggestWorkouts should return Superior workouts for superior fitness level
     Assert.Contains(Running(Some 30.0), workouts)
 
 
-//7.
-[<Fact>]
-let ``calculateProgressWithMessage should include motivational message`` () =
-    let goals =
-        [{ UserId = UserId("u1")
-           GoalType = Distance
-           TargetValue = 10.0
-           CurrentValue = 0.0
-           Deadline = DateTime.Now.AddDays(7.0)
-           Status = Active
-           CreatedAt = DateTime.Now }]
 
-    let entries = [1.0; 2.0; 3.0; 4.0]
-    let (updatedGoals, message) = calculateProgressWithMessage goals entries id
-    Assert.NotEmpty(message)
-    Assert.Contains("progress", message.ToLower())
+type DomainGenerators =
+    static member NonEmptyString() =
+        Arb.generate<string>
+        |> Gen.where (fun s -> not (String.IsNullOrWhiteSpace(s)))
+        |> Gen.map (NonEmptyString.create >> Option.get)
+        |> Arb.fromGen
+
+    static member EmailAddress() =
+        Arb.generate<string>
+        |> Gen.where (fun s -> s.Contains("@") && s.Length <= 254)
+        |> Gen.map (EmailAddress.create >> Option.get)
+        |> Arb.fromGen
+
+    static member PositiveInt() =
+        Gen.choose(1, 10000)
+        |> Gen.map (PositiveInt.create >> Option.get)
+        |> Arb.fromGen
+
+    static member FitnessLevel() =
+        Arb.from<FitnessLevel>
+
+    static member WorkoutIntensity() =
+        Arb.from<WorkoutIntensity>
+
+let registerGenerators() = 
+    Arb.register<DomainGenerators>() |> ignore
 
 
-//12.
-[<Fact>]
-let ``provideFeedbackWithScore should include score`` () =
-    let workout =
-        { Id = WorkoutId(Guid.NewGuid())
-          UserId = UserId("u1")
-          Date = DateTime.Now
-          WorkoutType = Running(Some 5.0)
-          Duration = 45
-          CaloriesBurned = None
-          Intensity = High
-          Notes = None
-          HeartRate = None }
+module PropertyTests =
+    do registerGenerators()
 
-    let feedback = provideFeedbackWithScore workout
-    Assert.Contains("Score", feedback)
+    [<Property(Arbitrary = [| typeof<DomainGenerators> |])>]
+    let ``UserProfile should always have valid email`` (name: NonEmptyString) (email: EmailAddress) =
+        let result = createUserProfile (NonEmptyString.value name) (EmailAddress.value email) None None None None
+        
+        match result with
+        | UserCreated user ->
+            EmailAddress.value user.Email |> should equal (EmailAddress.value email)
+            user.Email |> EmailAddress.value |> should contain "@"
+            
+        | InvalidUserData _ -> failwith "Should not fail with valid input"
 
-//16.
-[<Fact>]
-let ``scheduleGroupWorkout should set date and not notify`` () =
-    let participants = [UserId("u1"); UserId("u2")]
-    let date = DateTime.Now.AddDays(5.0)
-    let workoutType = Running(Some 5.0)
 
-    let scheduled = scheduleGroupWorkout participants workoutType date false
-    Assert.Equal(date, scheduled.Date)
-    Assert.False(scheduled.NotifyParticipants)
+    [<Property>]
+    let ``Progress percentage should be between 0 and 100 for active goals`` 
+        (currentValue: float) 
+        (targetValue: float) =
+        
+        // Only test with valid values
+        if targetValue > 0.0 && currentValue >= 0.0 then
+            let goal = {
+                UserId = UserId "test-user"
+                GoalType = DailySteps (createPositiveInt 10000)
+                TargetValue = targetValue
+                CurrentValue = currentValue
+                Deadline = None
+                Status = Active
+                CreatedAt = DateTime.Now
+            }
+            
+            let percentage = GoalExtensions.calculateProgressPercentage goal
+            percentage |> should be (greaterThanOrEqualTo 0.0)
+            percentage |> should be (lessThanOrEqualTo 100.0)
