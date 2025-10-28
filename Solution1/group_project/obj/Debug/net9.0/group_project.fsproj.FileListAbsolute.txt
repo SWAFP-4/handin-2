@@ -1,0 +1,13 @@
+C:\Users\michi\Desktop\Git\HS25\Functional Prog\Gruppenprojekt\Solution1\group_project\bin\Debug\net9.0\group_project.deps.json
+C:\Users\michi\Desktop\Git\HS25\Functional Prog\Gruppenprojekt\Solution1\group_project\bin\Debug\net9.0\group_project.dll
+C:\Users\michi\Desktop\Git\HS25\Functional Prog\Gruppenprojekt\Solution1\group_project\bin\Debug\net9.0\group_project.pdb
+C:\Users\michi\Desktop\Git\HS25\Functional Prog\Gruppenprojekt\Solution1\group_project\bin\Debug\net9.0\group_project.xml
+C:\Users\michi\Desktop\Git\HS25\Functional Prog\Gruppenprojekt\Solution1\group_project\obj\Debug\net9.0\group_project.fsproj.AssemblyReference.cache
+C:\Users\michi\Desktop\Git\HS25\Functional Prog\Gruppenprojekt\Solution1\group_project\obj\Debug\net9.0\group_project.AssemblyInfoInputs.cache
+C:\Users\michi\Desktop\Git\HS25\Functional Prog\Gruppenprojekt\Solution1\group_project\obj\Debug\net9.0\group_project.AssemblyInfo.fs
+C:\Users\michi\Desktop\Git\HS25\Functional Prog\Gruppenprojekt\Solution1\group_project\obj\Debug\net9.0\group_project.fsproj.CoreCompileInputs.cache
+C:\Users\michi\Desktop\Git\HS25\Functional Prog\Gruppenprojekt\Solution1\group_project\obj\Debug\net9.0\group_project.dll
+C:\Users\michi\Desktop\Git\HS25\Functional Prog\Gruppenprojekt\Solution1\group_project\obj\Debug\net9.0\refint\group_project.dll
+C:\Users\michi\Desktop\Git\HS25\Functional Prog\Gruppenprojekt\Solution1\group_project\obj\Debug\net9.0\group_project.xml
+C:\Users\michi\Desktop\Git\HS25\Functional Prog\Gruppenprojekt\Solution1\group_project\obj\Debug\net9.0\group_project.pdb
+C:\Users\michi\Desktop\Git\HS25\Functional Prog\Gruppenprojekt\Solution1\group_project\obj\Debug\net9.0\ref\group_project.dll

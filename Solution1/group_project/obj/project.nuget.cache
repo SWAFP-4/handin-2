@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "izgpJnObXsg=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Bruger\\Downloads\\group_project_repo-main\\group_project_repo-main\\Solution1\\group_project\\group_project.fsproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Bruger\\.nuget\\packages\\fsharp.core\\9.0.100\\fsharp.core.9.0.100.nupkg.sha512"
+  ],
+  "logs": []
+}
